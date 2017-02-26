@@ -183,7 +183,7 @@ class WebhookHandler(webapp2.RequestHandler):
         try:
             text = getText(body)
         except Exception as e:
-            logger.error("No text field in update. Try to get location")
+            logger.info("No text field in update. Try to get location")
             loc = getLocation(body)
             # Was weather previously requested?
             if (chatId in chats) and (chats[chatId] == "weatherReq"):
@@ -191,7 +191,7 @@ class WebhookHandler(webapp2.RequestHandler):
                 # Send weather to chat id and clear state
                 sendMessage(getWeather(loc), chatId)
                 del chats[chatId]
-                return
+            return
         
         if text == "/weather":
             keyboard = buildCitiesKeyboard()
