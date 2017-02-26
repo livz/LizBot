@@ -204,5 +204,5 @@ app = webapp2.WSGIApplication([
     ('/set_webhook', SetWebhookHandler),
     ('/get_webhook', GetWebhookHandler),
     ('/del_webhook', DeleteWebhookHandler),
-    ('/' + HOOK_TOKEN, WebhookHandler),
+    ('/' + HOOK_TOKEN, MeHandler),
 ], debug=True)
