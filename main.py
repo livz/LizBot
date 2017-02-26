@@ -51,7 +51,7 @@ def configLogging():
 
 # Read settings from configuration file
 def parseConfig():
-    global BASE_URL, URL_OWM
+    global BASE_URL, URL_OWM, HOOK_TOKEN, PROJECT_ID
     
     c = ConfigParser.ConfigParser()
     c.read("config.ini")
@@ -63,8 +63,6 @@ def parseConfig():
 
     HOOK_TOKEN = c.get("Settings", "HOOK_TOKEN")
     PROJECT_ID = c.get("Settings", "PROJECT_ID")
-    logger.warning("hook token: " + HOOK_TOKEN)
-    logger.warning("project id: " + PROJECT_ID)
 
 # Set requests timeout (default is 15)
 def setTimeout(numSec = 60):
@@ -112,6 +110,8 @@ class SetWebhookHandler(webapp2.RequestHandler):
         setTimeout()
         parseConfig()
 
+        logger.warning("hook token: " + HOOK_TOKEN)
+        logger.warning("project id: " + PROJECT_ID)
         hookUrl = "https://%s.appspot.com/%s" % (PROJECT_ID, HOOK_TOKEN)
         logger.warning(hookUrl)
         respBuf = urllib2.urlopen(BASE_URL + "setWebhook", urllib.urlencode({
