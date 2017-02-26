@@ -164,7 +164,7 @@ class WebhookHandler(webapp2.RequestHandler):
     def post(self):
         setTimeout()
         parseConfig()
-        logger.info("req:" + self.request.url)
+        logger.info("Received request: %s from %s" % (self.request.url, self.request.remote_addr))
 
         if HOOK_TOKEN not in self.request.url:
             # Not coming from Telegram
@@ -174,7 +174,7 @@ class WebhookHandler(webapp2.RequestHandler):
         body = json.loads(self.request.body)
         
         chatId = getChatId(body)
-        logger.info("Here: " + body)
+        logger.info("Here: " + str(body))
 
         try:
             text = getText(body)
