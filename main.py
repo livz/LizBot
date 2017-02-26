@@ -82,6 +82,8 @@ def makeRequest(url):
 class MeHandler(webapp2.RequestHandler):
     def get(self):
         setTimeout()
+        parseConfig()
+
         url = BASE_URL + "getMe"
         respBuf = urllib2.urlopen(url)
 
@@ -92,6 +94,8 @@ class MeHandler(webapp2.RequestHandler):
 class GetWebhookHandler(webapp2.RequestHandler):
     def get(self):
         setTimeout()
+        parseConfig()
+
         url = BASE_URL + "getWebhookInfo"
         respBuf = urllib2.urlopen(url)
 
@@ -102,6 +106,8 @@ class GetWebhookHandler(webapp2.RequestHandler):
 class SetWebhookHandler(webapp2.RequestHandler):
     def get(self):
         setTimeout()
+        parseConfig()
+
         hookUrl = "https://%s.appspot.com/%s" % (PROJECT_ID, HOOK_TOKEN)
         respBuf = urllib2.urlopen(BASE_URL + "setWebhook", urllib.urlencode({
             "url": hookUrl
@@ -113,6 +119,8 @@ class SetWebhookHandler(webapp2.RequestHandler):
 class DeleteWebhookHandler(webapp2.RequestHandler):
     def get(self):
         setTimeout()
+        parseConfig()
+
         url = BASE_URL + "deleteWebhook"
         respBuf = urllib2.urlopen(url)
 
@@ -169,6 +177,8 @@ chats = {}
 class WebhookHandler(webapp2.RequestHandler):
     def post(self):
         setTimeout()
+        parseConfig()
+
         body = json.loads(self.request.body)
         
         chatId = getChatId(body)
