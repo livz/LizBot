@@ -191,6 +191,7 @@ class WebhookHandler(webapp2.RequestHandler):
                 # Send weather to chat id and clear state
                 sendMessage(getWeather(loc), chatId)
                 del chats[chatId]
+                return
         
         if text == "/weather":
             keyboard = buildCitiesKeyboard()
@@ -205,6 +206,7 @@ class WebhookHandler(webapp2.RequestHandler):
             # Send weather to chat id and clear state
             sendMessage(getWeather(text), chatId)
             del chats[chatId]
+            return
         else:
             keyboard = buildKeyboard(["/weather"])
             sendMessage("Meowwwww! I learn new things every day but for now you can ask me about the weather.", chatId, keyboard)
