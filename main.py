@@ -3,7 +3,6 @@ import json
 import random
 import urllib
 import urllib2
-import requests
 
 # standard app engine imports
 from google.appengine.api import urlfetch
@@ -74,7 +73,7 @@ def formatResp(obj):
 # Make a request and get JSON response
 def makeRequest(url):
     logger.debug("URL: %s" % url)
-    r = requests.get(url)
+    r = urllib2.urlopen(url)
     resp = json.loads(r.content.decode("utf8"))
     return resp
 
