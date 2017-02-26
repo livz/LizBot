@@ -3,6 +3,7 @@ import json
 import random
 import urllib
 import urllib2
+import logging
 
 # standard app engine imports
 from google.appengine.api import urlfetch
