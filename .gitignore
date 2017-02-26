@@ -1,0 +1,4 @@
+*.swp
+*.log
+config.ini
+app.yaml

@@ -1,0 +1,12 @@
+[Settings]
+; Telegram API token, from @Botfather
+TOKEN = add_your_bot_api_token_here
+
+;Token for webhook  URL
+HOOK_TOKEN = add_your_webhook_token_here
+
+; Google App Engine project id
+PROJECT_ID = your_project_id
+
+; Open Weather Map API Key
+OWM_KEY = add_your_owm_api_key_here
