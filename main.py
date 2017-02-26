@@ -193,7 +193,6 @@ class WebhookHandler(webapp2.RequestHandler):
             sendMessage("Cahn's Axiom: When all else fails, read the instructions", chatId)
         elif text.startswith("/"):
             logger.warning("Invalid command %s" % text)    
-            continue
         elif (text in cities) and (chatId in chats) and (chats[chatId] == "weatherReq"):
             logger.info("Weather requested for %s" % text)
             # Send weather to chat id and clear state
