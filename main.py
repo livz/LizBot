@@ -32,23 +32,6 @@ logger.setLevel(logging.DEBUG)
 # Cities for weather requests
 cities = ["London", "Brasov"]
 
-# Configure file and console logging
-def configLogging():
-    # Create file logger and set level to DEBUG
-    # Mode = write -> clear existing log file
-    handler = logging.FileHandler("run.log", mode="w")
-    handler.setLevel(logging.DEBUG)
-    formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
-    handler.setFormatter(formatter)
-    logger.addHandler(handler)
-
-    # Create console handler and set level to INFO
-    ch = logging.StreamHandler()
-    ch.setLevel(logging.INFO)
-    formatter = logging.Formatter("[%(levelname)s] - %(message)s")
-    ch.setFormatter(formatter)
-    logger.addHandler(ch)
-
 # Read settings from configuration file
 def parseConfig():
     global BASE_URL, URL_OWM, HOOK_TOKEN, PROJECT_ID
