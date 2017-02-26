@@ -63,6 +63,8 @@ def parseConfig():
 
     HOOK_TOKEN = c.get("Settings", "HOOK_TOKEN")
     PROJECT_ID = c.get("Settings", "PROJECT_ID")
+    logger.warning("hook token: " + HOOK_TOKEN)
+    logger.warning("project id: " + PROJECT_ID)
 
 # Set requests timeout (default is 15)
 def setTimeout(numSec = 60):

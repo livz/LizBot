@@ -32,11 +32,17 @@ $ gcloud app deploy app.yaml --project fuzzylizbot -v <version_id> --verbosity=i
 Open app in the browser:
 $ gcloud app browse
 
-Read logs from default application:
+Read REQUESTS logs from default application:
 $ gcloud app logs read --service default --limit 10
 
 Stream logs from the command line:
 $  gcloud app logs tail -s default
+
+App logs visible per request in the console
+Google Cloud Platform -> Stackdriver logging -> Logs (+ picture)
+
+OR can be read via API:
+https://cloud.google.com/appengine/docs/standard/python/logs/                                                                                                                
 
 
 Delete old app versions
