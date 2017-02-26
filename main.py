@@ -32,6 +32,11 @@ logger.setLevel(logging.DEBUG)
 # Cities for weather requests
 cities = ["London", "Brasov"]
 
+# Keep track of conversation states: 'weatherReq'
+chats = {}
+
+# --------------- Helper functions ---------------
+
 # Read settings from configuration file
 def parseConfig():
     global BASE_URL, URL_OWM, HOOK_TOKEN, PROJECT_ID
@@ -60,9 +65,53 @@ def formatResp(obj):
 def makeRequest(url):
     logger.debug("URL: %s" % url)
     r = urllib2.urlopen(url)
-    resp = json.loads(r.content.decode("utf8"))
+    resp = json.load(r)
     return resp
 
+# Build a one-time keyboard for on-screen options
+def buildKeyboard(items):
+    keyboard = [[{"text":item}] for item in items]
+    replyKeyboard = {"keyboard":keyboard, "one_time_keyboard": True}
+    logger.debug(replyKeyboard)
+    return json.dumps(replyKeyboard)
+
+def buildCitiesKeyboard():
+    keyboard = [[{"text": c}] for c in cities]
+    keyboard.append([{"text": "Share location", "request_location": True}])
+    replyKeyboard = {"keyboard": keyboard, "one_time_keyboard": True}
+    logger.debug(replyKeyboard)
+    return json.dumps(replyKeyboard)
+
+# Query OWM for the weather for place or coords
+def getWeather(place):
+    if isinstance(place, dict):     # coordinates provided
+        lat, lon = place["latitude"], place["longitude"]
+        url = URL_OWM + "&lat=%f&lon=%f&cnt=1" % (lat, lon)
+        logger.info("Requesting weather: " + url)
+        js = makeRequest(url)
+        logger.debug(js)
+        return u"%s \N{DEGREE SIGN}C, %s in %s" % (getTemp(js), getDesc(js), getCity(js))
+    else:                           # place name provided 
+        # make req
+        url = URL_OWM + "&q={}".format(place)
+        logger.info("Requesting weather: " + url)
+        js = makeRequest(url)
+        logger.debug(js)
+    return u"%s \N{DEGREE SIGN}C, %s in %s" % (getTemp(js), getDesc(js), getCity(js))
+
+# Send URL-encoded message to chat id
+def sendMessage(text, chatId, interface=None):
+    params = {
+        "chat_id": str(chatId),
+        "text": text.encode("utf-8"),
+        "parse_mode": "Markdown",
+    }
+    if interface:
+        params["reply_markup"] = interface
+    
+    resp = urllib2.urlopen(BASE_URL + "sendMessage", urllib.urlencode(params)).read()
+
+# --------------- Request handler functions ---------------
 # Return basic information about the bot
 class MeHandler(webapp2.RequestHandler):
     def get(self):
@@ -113,51 +162,6 @@ class DeleteWebhookHandler(webapp2.RequestHandler):
         self.response.headers["Content-Type"] = "text/plain"
         self.response.write(formatResp(respBuf))
 
-# Build a one-time keyboard for on-screen options
-def buildKeyboard(items):
-    keyboard = [[{"text":item}] for item in items]
-    replyKeyboard = {"keyboard":keyboard, "one_time_keyboard": True}
-    logger.debug(replyKeyboard)
-    return json.dumps(replyKeyboard)
-
-def buildCitiesKeyboard():
-    keyboard = [[{"text": c}] for c in cities]
-    keyboard.append([{"text": "Share location", "request_location": True}])
-    replyKeyboard = {"keyboard": keyboard, "one_time_keyboard": True}
-    logger.debug(replyKeyboard)
-    return json.dumps(replyKeyboard)
-
-# Query OWM for the weather for place or coords
-def getWeather(place):
-    if isinstance(place, dict):     # coordinates provided
-        lat, lon = place["latitude"], place["longitude"]
-        url = URL_OWM + "&lat=%f&lon=%f&cnt=1" % (lat, lon)
-        logger.info("Requesting weather: " + url)
-        js = makeRequest(url)
-        logger.debug(js)
-        return u"%s \N{DEGREE SIGN}C, %s in %s" % (getTemp(js), getDesc(js), getCity(js))
-    else:                           # place name provided 
-        # make req
-        url = URL_OWM + "&q={}".format(place)
-        logger.info("Requesting weather: " + url)
-        js = makeRequest(url)
-        logger.debug(js)
-    return u"%s \N{DEGREE SIGN}C, %s in %s" % (getTemp(js), getDesc(js), getCity(js))
-
-# Send URL-encoded message to chat id
-def sendMessage(text, chatId, interface=None):
-    params = {
-        "chat_id": str(chatId),
-        "text": text.encode("utf-8"),
-        "parse_mode": "Markdown",
-    }
-    if interface:
-        params["reply_markup"] = interface
-    
-    resp = urllib2.urlopen(BASE_URL + "sendMessage", urllib.urlencode(params)).read()
-
-# Keep track of conversation states: 'weatherReq'
-chats = {}
 
 # Handler for the webhook, called by Telegram
 class WebhookHandler(webapp2.RequestHandler):
@@ -187,7 +191,7 @@ class WebhookHandler(webapp2.RequestHandler):
                 # Send weather to chat id and clear state
                 sendMessage(getWeather(loc), chatId)
                 del chats[chatId]
-        logger.info("here2")
+        
         if text == "/weather":
             keyboard = buildCitiesKeyboard()
             chats[chatId] = "weatherReq"
