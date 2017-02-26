@@ -35,6 +35,9 @@ $ gcloud app browse
 Read logs from default application:
 $ gcloud app logs read --service default --limit 10
 
+Stream logs from the command line:
+$  gcloud app logs tail -s default
+
 
 Delete old app versions
 --------
