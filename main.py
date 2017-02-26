@@ -168,7 +168,7 @@ class WebhookHandler(webapp2.RequestHandler):
 
         if HOOK_TOKEN not in self.request.url:
             # Not coming from Telegram
-            logger.error("Post request without token from IP: %s" % self.request.remote_addr)a
+            logger.error("Post request without token from IP: %s" % self.request.remote_addr)
             return
  
         body = json.loads(self.request.body)
