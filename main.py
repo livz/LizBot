@@ -13,6 +13,7 @@ import webapp2
 TOKEN = ""
 HOOK_TOKEN = ""
 OWM_KEY = ""
+PROJECT_ID = ""
 
 # Lambda functions to parse updates from Telegram
 def getText(update):            return update["message"]["text"]
