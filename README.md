@@ -27,14 +27,25 @@ $ git push --all google
 
 Deploy app:
 --------
-$ gcloud app deploy app.yaml --project fuzzylizbot --verbosity=info
+$ gcloud app deploy app.yaml --project fuzzylizbot -v <version_id> --verbosity=info
 
 Open app in the browser:
 $ gcloud app browse
 
-Read logs fro mdefault application:
+Read logs from default application:
 $ gcloud app logs read --service default --limit 10
 
+
+Delete old app versions
+--------
+List all versions:
+$ gloud app versions list
+
+Delete vesions:
+$ gcloud app versions delete v1 v2
+
+From GUI:
+http://stackoverflow.com/questions/34597576/cli-400-error-deploying-to-google-app-engine
 
 Request logs from logger module
 --------
