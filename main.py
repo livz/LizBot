@@ -93,7 +93,7 @@ class SetWebhookHandler(webapp2.RequestHandler):
         setTimeout()
         parseConfig()
 
-        hookUrl = "https://%s.appspot.com/%s" % (PROJECT_ID, HOOK_TOKEN)
+        hookUrl = "https://%s.appspot.com/TG%s" % (PROJECT_ID, HOOK_TOKEN)
         logger.info("Setting new webhook to: %s" % hookUrl)
         respBuf = urllib2.urlopen(BASE_URL + "setWebhook", urllib.urlencode({
             "url": hookUrl
@@ -165,6 +165,7 @@ class WebhookHandler(webapp2.RequestHandler):
         setTimeout()
         parseConfig()
         logger.info("xxxxx")
+        logger.info("req:" + self.request)
         body = json.loads(self.request.body)
         
         chatId = getChatId(body)
