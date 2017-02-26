@@ -164,8 +164,13 @@ class WebhookHandler(webapp2.RequestHandler):
     def post(self):
         setTimeout()
         parseConfig()
-        logger.info("xxxxx")
-        logger.info("req:" + self.request)
+        logger.info("req:" + self.request.url)
+
+        if HOOK_TOKEN not in self.request.url:
+            # Not coming from Telegram
+            logger.error("Post request without token from IP: %s" % self.request.remote_addr)a
+            return
+ 
         body = json.loads(self.request.body)
         
         chatId = getChatId(body)
