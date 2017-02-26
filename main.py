@@ -164,10 +164,11 @@ class WebhookHandler(webapp2.RequestHandler):
     def post(self):
         setTimeout()
         parseConfig()
-
+        logger.info("xxxxx")
         body = json.loads(self.request.body)
         
         chatId = getChatId(body)
+        logger.info("Here: " + body)
 
         try:
             text = getText(body)
@@ -180,7 +181,7 @@ class WebhookHandler(webapp2.RequestHandler):
                 # Send weather to chat id and clear state
                 sendMessage(getWeather(loc), chatId)
                 del chats[chatId]
-
+        logger.info("here2")
         if text == "/weather":
             keyboard = buildCitiesKeyboard()
             chats[chatId] = "weatherReq"
