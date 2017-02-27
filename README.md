@@ -34,6 +34,26 @@ $ gcloud app deploy app.yaml --project <project name> -v <version_id> --verbosit
 $ gcloud app browse
 ```
 
+### Configuration ###
+The configuration file ```config.ini.example``` needs to be renamed and modified:
+
+```ini
+[Settings]
+
+; Telegram API token, from @Botfather
+TOKEN = 74632864382432:AxxxYBFA99Hixo_jTsfsd08J
+
+;Token for webhook  URL
+HOOK_TOKEN = ab10e773c1fadca323af2a561eedcbb8
+
+; Google App Engine project id
+PROJECT_ID = fuzzylizbot
+
+; Open Weather Map API Key
+OWM_KEY = daa3171a18d73c8c1c6c5f13c1298331
+
+```
+
 ### Management and debugging ###
 * Read **_requests logs_** from default application:
 
