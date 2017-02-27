@@ -8,7 +8,7 @@
 Google Cloud Platform -> Development -> Source code
 2. Connect a local repository:
 
-```bash
+ ```bash
 $ gcloud init
 $ git config credential.helper gcloud.sh    
 $ git remote add google https://source.developers.google.com/p/fuzzylizbot/r/lizbot
@@ -16,7 +16,7 @@ $ git remote add google https://source.developers.google.com/p/fuzzylizbot/r/liz
   
 3. Push changes from local repository to Google Cloud:
 
-```bash
+ ```bash
 $ git add file1 file2
 $ git commit -m "commit message"
 $ git push --all google
@@ -24,13 +24,13 @@ $ git push --all google
 
 3. Deploy the app:
 
-```bash
+ ```bash
 $ gcloud app deploy app.yaml --project <project name> -v <version_id> --verbosity=info
 ```
 
 4. Open app in the browser to test:
 
-```bash
+ ```bash
 $ gcloud app browse
 ```
 
