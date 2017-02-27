@@ -197,7 +197,7 @@ class WebhookHandler(webapp2.RequestHandler):
             keyboard = buildCitiesKeyboard()
             chats[chatId] = "weatherReq"
             sendMessage("Select a city", chatId, keyboard)
-        elif (text == "/start") or (text.startswith("/"):
+        elif (text == "/start") or (text.startswith("/")):
             sendMessage("Cahn's Axiom: When all else fails, read the instructions", chatId)    
         elif (text in cities) and (chatId in chats) and (chats[chatId] == "weatherReq"):
             logger.info("Weather requested for %s" % text)
