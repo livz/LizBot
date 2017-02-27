@@ -1,3 +1,7 @@
+http://stackoverflow.com/questions/849308/pull-push-from-multiple-remote-locations
+http://stackoverflow.com/questions/14290113/git-pushing-code-to-two-remotes
+
+
 Google App Engine dashboard
 https://console.cloud.google.com/appengine
 

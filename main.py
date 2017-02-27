@@ -198,18 +198,17 @@ class WebhookHandler(webapp2.RequestHandler):
             chats[chatId] = "weatherReq"
             sendMessage("Select a city", chatId, keyboard)
         elif text == "/start":
-            sendMessage("Cahn's Axiom: When all else fails, read the instructions", chatId)
+            keyboard = buildKeyboard(["/weather"])
+            sendMessage("Meowwwww! I learn new things every day but for now you can ask me about the weather.", chatId, keyboard)
         elif text.startswith("/"):
-            logger.warning("Invalid command %s" % text)    
+            logger.info("Invalid command %s" % text)    
+            sendMessage("Cahn's Axiom: When all else fails, read the instructions", chatId)    
         elif (text in cities) and (chatId in chats) and (chats[chatId] == "weatherReq"):
             logger.info("Weather requested for %s" % text)
             # Send weather to chat id and clear state
             sendMessage(getWeather(text), chatId)
             del chats[chatId]
             return
-        else:
-            keyboard = buildKeyboard(["/weather"])
-            sendMessage("Meowwwww! I learn new things every day but for now you can ask me about the weather.", chatId, keyboard)
 
 app = webapp2.WSGIApplication([
     ('/me', MeHandler),
