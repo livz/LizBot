@@ -1,66 +1,82 @@
-http://stackoverflow.com/questions/849308/pull-push-from-multiple-remote-locations
-http://stackoverflow.com/questions/14290113/git-pushing-code-to-two-remotes
+# LizBot
 
+*Deployment of [LanaBot](https://github.com/livz/lanabot) Telegram bot on Google App Engine*
 
-Google App Engine dashboard
-https://console.cloud.google.com/appengine
+### Steps to add your Telegram bot to Google App Engine and set up [web hooks](https://core.telegram.org/bots/api#getting-updates): ###
 
-Create a new code repository:
+1. Create a new code repository on Cloud Platform:
 Google Cloud Platform -> Development -> Source code
-
-Add Google Cloud source repository
---------
-https://cloud.google.com/source-repositories/docs/adding-repositories-as-remotes
-
+2. Connect a local repository:
+```bash
 $ gcloud init
+$ git config credential.helper gcloud.sh    
+$ git remote add google https://source.developers.google.com/p/fuzzylizbot/r/lizbot
+```
+  
+2. Push changes from local repository to Google Cloud:
 
-$ git config credential.helper gcloud.sh
-
-$ git remote add google \
-  https://source.developers.google.com/p/fuzzylizbot/r/lizbot
-
-Push changes from local rep to google cloud
---------
-https://console.cloud.google.com/code/develop/repo?project=fuzzylizbot
-
-$ git add ...
-$ git commit -m "...."
+```bash
+$ git add file1 file2
+$ git commit -m "commit message"
 $ git push --all google
+```
 
+3. Deploy the app:
 
+```bash
+$ gcloud app deploy app.yaml --project <project name> -v <version_id> --verbosity=info
+```
 
-Deploy app:
---------
-$ gcloud app deploy app.yaml --project fuzzylizbot -v <version_id> --verbosity=info
+4. Open app in the browser to test:
 
-Open app in the browser:
+```bash
 $ gcloud app browse
+```
 
-Read REQUESTS logs from default application:
+### Management and debugging ###
+* Read **_requests logs_** from default application:
+
+```bash
 $ gcloud app logs read --service default --limit 10
+```
 
-Stream logs from the command line:
+* Stream **_requests logs_** from the command line:
+
+```bash
 $  gcloud app logs tail -s default
+```
 
-App logs visible per request in the console
-Google Cloud Platform -> Stackdriver logging -> Logs (+ picture)
+* **_Application logs_** (*including logs from Pytho's logging module*) are generated **per request**, and can be viewed in the console:
+  * Google Cloud Platform -> Stackdriver logging -> Logs
+  
+    ![Logs](images/banner.png)
+  
+  * You can also read the applications logs [via API](https://cloud.google.com/appengine/docs/standard/python/logs/)
 
-OR can be read via API:
-https://cloud.google.com/appengine/docs/standard/python/logs/                                                                                                                
 
-
-Delete old app versions
---------
-List all versions:
+* Manage application versions from the console:
+  * List all versions:
+  
+```bash
 $ gloud app versions list
+```
 
-Delete vesions:
+  * Delete vesions:
+  
+```bash
 $ gcloud app versions delete v1 v2
+```
 
-From GUI:
-http://stackoverflow.com/questions/34597576/cli-400-error-deploying-to-google-app-engine
+* Manage versions using GUI :
+  * Google Cloud Platform -> Stackdriver logging -> Logs
+  
+    ![Versions](images/versions.png)
 
-Request logs from logger module
---------
-https://cloud.google.com/appengine/docs/standard/python/tools/downloading-logs
-https://console.cloud.google.com/logs?_ga=1.195045804.1680263653.1487352034
+
+
+### References ###
+[Google App Engine dashboard](https://console.cloud.google.com/appengine)
+
+[Adding Cloud Source Repositories as Remote](https://cloud.google.com/source-repositories/docs/adding-repositories-as-remotes)
+
+[Telegram Bot API](https://core.telegram.org/bots/api)
