@@ -1,19 +1,20 @@
 # LizBot
 
-*Deployment of [LanaBot](https://github.com/livz/lanabot) Telegram bot on Google App Engine*
+*Deployment of [LanaBot](https://github.com/livz/lanabot) Telegram bot on Google App Engine and set up [web hooks](https://core.telegram.org/bots/api#getting-updates):*
 
-### Steps to add your Telegram bot to Google App Engine and set up [web hooks](https://core.telegram.org/bots/api#getting-updates): ###
+### Steps to add your Telegram bot to Google App Engine ###
 
 1. Create a new code repository on Cloud Platform:
 Google Cloud Platform -> Development -> Source code
 2. Connect a local repository:
+
 ```bash
 $ gcloud init
 $ git config credential.helper gcloud.sh    
 $ git remote add google https://source.developers.google.com/p/fuzzylizbot/r/lizbot
 ```
   
-2. Push changes from local repository to Google Cloud:
+3. Push changes from local repository to Google Cloud:
 
 ```bash
 $ git add file1 file2
@@ -49,7 +50,7 @@ $  gcloud app logs tail -s default
 * **_Application logs_** (*including logs from Pytho's logging module*) are generated **per request**, and can be viewed in the console:
   * Google Cloud Platform -> Stackdriver logging -> Logs
   
-    ![Logs](images/banner.png)
+    ![Logs](images/logs.png)
   
   * You can also read the applications logs [via API](https://cloud.google.com/appengine/docs/standard/python/logs/)
 
