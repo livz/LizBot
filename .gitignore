@@ -2,3 +2,4 @@
 *.log
 config.ini
 app.yaml
+facts.txt

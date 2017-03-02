@@ -5,6 +5,7 @@ import urllib
 import urllib2
 import logging
 import ConfigParser
+import os
 
 # standard app engine imports
 from google.appengine.api import urlfetch
@@ -36,7 +37,6 @@ cities = ["London", "Brasov"]
 chats = {}
 
 # --------------- Helper functions ---------------
-
 # Read settings from configuration file
 def parseConfig():
     global BASE_URL, URL_OWM, HOOK_TOKEN, PROJECT_ID
@@ -75,13 +75,19 @@ def buildKeyboard(items):
     logger.debug(replyKeyboard)
     return json.dumps(replyKeyboard)
 
-def buildCitiesKeyboard():
-    keyboard = [[{"text": c}] for c in cities]
-    keyboard.append([{"text": "Share location", "request_location": True}])
-    replyKeyboard = {"keyboard": keyboard, "one_time_keyboard": True}
-    logger.debug(replyKeyboard)
-    return json.dumps(replyKeyboard)
+# Send URL-encoded message to chat id
+def sendMessage(text, chatId, interface=None):
+    params = {
+        "chat_id": str(chatId),
+        "text": text.encode("utf-8"),
+        "parse_mode": "Markdown",
+    }
+    if interface:
+        params["reply_markup"] = interface
+    
+    resp = urllib2.urlopen(BASE_URL + "sendMessage", urllib.urlencode(params)).read()
 
+# --------------- Weather related stuff ---------------
 # Query OWM for the weather for place or coords
 def getWeather(place):
     if isinstance(place, dict):     # coordinates provided
@@ -99,17 +105,35 @@ def getWeather(place):
         logger.debug(js)
     return u"%s \N{DEGREE SIGN}C, %s in %s" % (getTemp(js), getDesc(js), getCity(js))
 
-# Send URL-encoded message to chat id
-def sendMessage(text, chatId, interface=None):
-    params = {
-        "chat_id": str(chatId),
-        "text": text.encode("utf-8"),
-        "parse_mode": "Markdown",
-    }
-    if interface:
-        params["reply_markup"] = interface
-    
-    resp = urllib2.urlopen(BASE_URL + "sendMessage", urllib.urlencode(params)).read()
+def buildCitiesKeyboard():
+    keyboard = [[{"text": c}] for c in cities]
+    keyboard.append([{"text": "Share location", "request_location": True}])
+    replyKeyboard = {"keyboard": keyboard, "one_time_keyboard": True}
+    logger.debug(replyKeyboard)
+    return json.dumps(replyKeyboard)
+
+# --------------- Random facts related functions ---------------
+# Read random line from big text file
+def getFact():
+    fName = "facts.txt"
+    f = open(fName, "r")
+
+    fSize = os.stat(fName)[6]
+    # Seek to a random place in the file
+    f.seek(random.randint(0, fSize-1))
+
+    # The first readline since it may fall in the middle of a line
+    f.readline()
+    # Read the next complete line
+    line = f.readline()
+    # If last line, wrap and read the first
+    if not line:
+        f.seek(0)
+        f.readline()
+
+    f.close()
+
+return line.strip()                                                                                           
 
 # --------------- Request handler functions ---------------
 # Return basic information about the bot
@@ -197,16 +221,18 @@ class WebhookHandler(webapp2.RequestHandler):
             keyboard = buildCitiesKeyboard()
             chats[chatId] = "weatherReq"
             sendMessage("Select a city", chatId, keyboard)
-        elif (text == "/start") or (text.startswith("/")):
-            sendMessage("Cahn's Axiom: When all else fails, read the instructions", chatId)    
         elif (text in cities) and (chatId in chats) and (chats[chatId] == "weatherReq"):
             logger.info("Weather requested for %s" % text)
             # Send weather to chat id and clear state
             sendMessage(getWeather(text), chatId)
             del chats[chatId]
+        elif text == "/fact":
+            sendMessage(getFact(), chatId)
+        elif (text == "/start") or (text.startswith("/")):
+            sendMessage("Cahn's Axiom: When all else fails, read the instructions", chatId)    
         else:
-            keyboard = buildKeyboard(["/weather"])
-            sendMessage("Meowwwww! I learn new things every day but for now you can ask me about the weather.", chatId, keyboard)
+            keyboard = buildKeyboard(["/weather", "/fact"])
+            sendMessage("Meowwwww! I learn new things every day but for now you can ask me about the following:", chatId, keyboard)
 
 
 app = webapp2.WSGIApplication([
