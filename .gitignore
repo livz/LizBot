@@ -1,5 +1,13 @@
+# No temporary files
 *.swp
+
+# No log files from logging module
 *.log
+
+# No configuration files
 config.ini
 app.yaml
+
+# No databases of random facts
 facts.txt
+compliments.txt

@@ -114,8 +114,7 @@ def buildCitiesKeyboard():
 
 # --------------- Random facts related functions ---------------
 # Read random line from big text file
-def getFact():
-    fName = "facts.txt"
+def getRandom(fName): 
     f = open(fName, "r")
 
     fSize = os.stat(fName)[6]
@@ -134,6 +133,14 @@ def getFact():
     f.close()
 
     return line.strip()                                                                                           
+
+def getFact():
+    fName = "facts.txt"
+    return getRandom(fName)    
+
+def getCompliment():
+    fName = "compliments.txt"
+    return getRandom(fName)
 
 # --------------- Request handler functions ---------------
 # Return basic information about the bot
@@ -228,10 +235,12 @@ class WebhookHandler(webapp2.RequestHandler):
             del chats[chatId]
         elif text == "/fact":
             sendMessage(getFact(), chatId)
+        elif text == "/compliment":
+            sendMessage(getCompliment(), chatId)
         elif (text == "/start") or (text.startswith("/")):
-            sendMessage("Cahn's Axiom: When all else fails, read the instructions", chatId)    
+            sendMessage("Cahn's Axiom: When all else fails, read the instructions", chatId) 
         else:
-            keyboard = buildKeyboard(["/weather", "/fact"])
+            keyboard = buildKeyboard(["/weather", "/fact", "/compliment"])
             sendMessage("Meowwwww! I learn new things every day but for now you can ask me about the following:", chatId, keyboard)
 
 
