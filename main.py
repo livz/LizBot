@@ -133,7 +133,7 @@ def getFact():
 
     f.close()
 
-return line.strip()                                                                                           
+    return line.strip()                                                                                           
 
 # --------------- Request handler functions ---------------
 # Return basic information about the bot
