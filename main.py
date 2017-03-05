@@ -35,7 +35,7 @@ logger.setLevel(logging.DEBUG)
 cities = ["London", "Brasov"]
 
 # Accepted commands
-commands = ["/weather", "/fact", "/compliment", "/fortune"]
+commands = ["/weather", "/fact", "/mirror", "/fortune"]
 
 # Keep track of conversation states: 'weatherReq', 'verifying', 'verified'
 chats = {}
@@ -147,6 +147,10 @@ def getFact():
 
 def getCompliment():
     fName = "compliments.txt"
+    return getRandom(fName)
+
+def getCookie():
+    fName = "fortunes.dat"
     return getRandom(fName)
 
 def getChall():
@@ -282,8 +286,11 @@ class WebhookHandler(webapp2.RequestHandler):
         elif text == "/fact":
             sendMessage(getFact(), chatId)
 
-        elif text == "/compliment":
+        elif text == "/mirror":
             sendMessage(getCompliment(), chatId)
+
+        elif text == "/fortune":
+            sendMessage(getCookie(), chatId)
 
         elif text.startswith("/"):
             sendMessage("Cahn's Axiom: When all else fails, read the instructions", chatId) 
