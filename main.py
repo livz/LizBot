@@ -249,6 +249,7 @@ class WebhookHandler(webapp2.RequestHandler):
             question = chal["Question"]
             answers = chal["Answers"]
             keyboard = buildKeyboard(answers)
+            sendMessage("New chat! Please verify by answering a simple question!", chatId)
             sendMessage(question, chatId, keyboard)
 
             # Change status
