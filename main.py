@@ -20,7 +20,8 @@ PROJECT_ID = ""
 def getText(update):            return update["message"]["text"]
 def getLocation(update):        return update["message"]["location"]
 def getChatId(update):          return update["message"]["chat"]["id"]
-def getResult(updates):         return updates["result"]
+def getName(update):            return update["message"]["from"]
+def getResult(update):          return update["result"]
 
 # # Lambda functions to parse weather responses
 def getDesc(w):                 return w["weather"][0]["description"]
@@ -32,6 +33,9 @@ logger.setLevel(logging.DEBUG)
 
 # Cities for weather requests
 cities = ["London", "Brasov"]
+
+# Accepted commands
+commands = ["/weather", "/fact", "/compliment", "/fortune"]
 
 # Keep track of conversation states: 'weatherReq'
 chats = {}
@@ -223,7 +227,11 @@ class WebhookHandler(webapp2.RequestHandler):
                 sendMessage(getWeather(loc), chatId)
                 del chats[chatId]
             return
-        
+       
+        if text == "/start":
+            keyboard = buildKeyboard(commands)
+            sendMessage("Hello s! Why not try the commands below:" , chatId, keyboard)
+            logger.info(getName(body)
         if text == "/weather":
             keyboard = buildCitiesKeyboard()
             chats[chatId] = "weatherReq"
@@ -237,11 +245,11 @@ class WebhookHandler(webapp2.RequestHandler):
             sendMessage(getFact(), chatId)
         elif text == "/compliment":
             sendMessage(getCompliment(), chatId)
-        elif (text == "/start") or (text.startswith("/")):
+        elif text.startswith("/"):
             sendMessage("Cahn's Axiom: When all else fails, read the instructions", chatId) 
         else:
-            keyboard = buildKeyboard(["/weather", "/fact", "/compliment"])
-            sendMessage("Meowwwww! I learn new things every day but for now you can ask me about the following:", chatId, keyboard)
+            keyboard = buildKeyboard(commands)
+            sendMessage("I learn new things every day but for now you can ask me about the following:", chatId, keyboard)
 
 
 app = webapp2.WSGIApplication([
