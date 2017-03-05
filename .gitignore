@@ -8,6 +8,6 @@
 config.ini
 app.yaml
 
-# No databases of random facts
+# No databases
 facts.txt
 compliments.txt

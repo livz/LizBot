@@ -231,7 +231,7 @@ class WebhookHandler(webapp2.RequestHandler):
         if text == "/start":
             keyboard = buildKeyboard(commands)
             sendMessage("Hello s! Why not try the commands below:" , chatId, keyboard)
-            logger.info(getName(body)
+            logger.info(getName(body))
         elif text == "/weather":
             keyboard = buildCitiesKeyboard()
             chats[chatId] = "weatherReq"
