@@ -232,7 +232,7 @@ class WebhookHandler(webapp2.RequestHandler):
             keyboard = buildKeyboard(commands)
             sendMessage("Hello s! Why not try the commands below:" , chatId, keyboard)
             logger.info(getName(body)
-        if text == "/weather":
+        elif text == "/weather":
             keyboard = buildCitiesKeyboard()
             chats[chatId] = "weatherReq"
             sendMessage("Select a city", chatId, keyboard)
