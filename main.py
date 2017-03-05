@@ -40,6 +40,9 @@ commands = ["/weather", "/fact", "/compliment", "/fortune"]
 # Keep track of conversation states: 'weatherReq', 'verifying', 'verified'
 chats = {}
 
+# Expected answers for pending chats
+expected = {}
+
 # --------------- Helper functions ---------------
 # Read settings from configuration file
 def parseConfig():
