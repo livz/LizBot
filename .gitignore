@@ -11,3 +11,4 @@ app.yaml
 # No databases
 facts.txt
 compliments.txt
+trivia.json

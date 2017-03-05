@@ -37,7 +37,7 @@ cities = ["London", "Brasov"]
 # Accepted commands
 commands = ["/weather", "/fact", "/compliment", "/fortune"]
 
-# Keep track of conversation states: 'weatherReq'
+# Keep track of conversation states: 'weatherReq', 'verifying', 'verified'
 chats = {}
 
 # --------------- Helper functions ---------------
@@ -116,7 +116,7 @@ def buildCitiesKeyboard():
     logger.debug(replyKeyboard)
     return json.dumps(replyKeyboard)
 
-# --------------- Random facts related functions ---------------
+# --------------- Random facts/fortune/compliments/challenges functions ---------------
 # Read random line from big text file
 def getRandom(fName): 
     f = open(fName, "r")
@@ -146,6 +146,12 @@ def getCompliment():
     fName = "compliments.txt"
     return getRandom(fName)
 
+def getChall():
+    questions = json.loads(open("trivia.json").read())
+    numQ = len(questions)
+    
+    return questions[random.randint(0, numQ-1)]
+  
 # --------------- Request handler functions ---------------
 # Return basic information about the bot
 class MeHandler(webapp2.RequestHandler):
@@ -213,7 +219,7 @@ class WebhookHandler(webapp2.RequestHandler):
         body = json.loads(self.request.body)
         
         chatId = getChatId(body)
-        logger.info("Here: " + str(body))
+        logger.info("Response body: " + str(body))
 
         try:
             text = getText(body)
@@ -228,24 +234,57 @@ class WebhookHandler(webapp2.RequestHandler):
                 del chats[chatId]
             return
        
-        if text == "/start":
+        # Has user answered the challenge?
+        if chatId not in chats:
+            logger.info("Chat not in the list. Verify user")
+            # Present challenge
+            chal = getChall() 
+            question = chal["Question"]
+            answers = chal["Answers"]
+            keyboard = buildKeyboard(answers)
+            sendMessage(question, chatId, keyboard)
+
+            # Change status
+            chats[chatId] = "verifying"
+
+            expected[chatId] = answers[chal["Correct"]]
+
+            return
+
+        elif chats[chatId] == "verifying":
+            logger.info("Verify user answer")
+            # check answer
+            if text == expected[chatId]:
+                logger.info("User verified!")
+                chats[chatId] = "verified"
+            else:
+                logger.info("Incorrect answer. Not verified")
+                del chats[chatId]
+
+        elif text == "/start":
             keyboard = buildKeyboard(commands)
             sendMessage("Hello %s! Why not try the commands below:"  % getName(body), chatId, keyboard)
+
         elif text == "/weather":
             keyboard = buildCitiesKeyboard()
             chats[chatId] = "weatherReq"
             sendMessage("Select a city", chatId, keyboard)
+
         elif (text in cities) and (chatId in chats) and (chats[chatId] == "weatherReq"):
             logger.info("Weather requested for %s" % text)
             # Send weather to chat id and clear state
             sendMessage(getWeather(text), chatId)
             del chats[chatId]
+
         elif text == "/fact":
             sendMessage(getFact(), chatId)
+
         elif text == "/compliment":
             sendMessage(getCompliment(), chatId)
+
         elif text.startswith("/"):
             sendMessage("Cahn's Axiom: When all else fails, read the instructions", chatId) 
+
         else:
             keyboard = buildKeyboard(commands)
             sendMessage("I learn new things every day but for now you can ask me about the following:", chatId, keyboard)
