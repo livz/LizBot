@@ -264,6 +264,7 @@ class WebhookHandler(webapp2.RequestHandler):
             # check answer
             if text == expected[chatId]:
                 logger.info("User verified!")
+                sendMessage("Correct! User verified.", chatId)
                 chats[chatId] = "verified"
             else:
                 logger.info("Incorrect answer. Not verified")
