@@ -20,7 +20,7 @@ PROJECT_ID = ""
 def getText(update):            return update["message"]["text"]
 def getLocation(update):        return update["message"]["location"]
 def getChatId(update):          return update["message"]["chat"]["id"]
-def getName(update):            return update["message"]["from"]
+def getName(update):            return update["message"]["from"]["first_name"]
 def getResult(update):          return update["result"]
 
 # # Lambda functions to parse weather responses
@@ -230,8 +230,7 @@ class WebhookHandler(webapp2.RequestHandler):
        
         if text == "/start":
             keyboard = buildKeyboard(commands)
-            sendMessage("Hello s! Why not try the commands below:" , chatId, keyboard)
-            logger.info(getName(body))
+            sendMessage("Hello %s! Why not try the commands below:"  % getName(body), chatId, keyboard)
         elif text == "/weather":
             keyboard = buildCitiesKeyboard()
             chats[chatId] = "weatherReq"
