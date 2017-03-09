@@ -282,7 +282,7 @@ class WebhookHandler(webapp2.RequestHandler):
 
                 expected[chatId] = answers[chal["Correct"]]
     
-        elif chats[chatId] == "waitingAnswer":
+        elif (chatId in chats) and (chats[chatId] == "waitingAnswer"):
             logger.info("Verify user answer")
 
             if text == expected[chatId]:
