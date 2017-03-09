@@ -294,7 +294,7 @@ class WebhookHandler(webapp2.RequestHandler):
 
             del chats[chatId]
    
-         elif text.startswith("/"):
+        elif text.startswith("/"):
             sendMessage("Cahn's Axiom: When all else fails, read the instructions", chatId) 
 
         else:
