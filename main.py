@@ -35,12 +35,12 @@ logger.setLevel(logging.DEBUG)
 cities = ["London", "Brasov"]
 
 # Accepted commands
-commands = ["/weather", "/fact", "/mirror", "/fortune"]
+commands = ["/weather", "/fact", "/mirror", "/fortune", "/trivia"]
 
 # Keep track of conversation states: 'weatherReq', 'verifying', 'verified'
 chats = {}
 
-# Expected answers for pending chats
+# Expected answers for pending trivia question
 expected = {}
 
 # --------------- Helper functions ---------------
@@ -240,37 +240,9 @@ class WebhookHandler(webapp2.RequestHandler):
                 sendMessage(getWeather(loc), chatId)
                 del chats[chatId]
             return
-       
-        # Has user answered the challenge?
-        if chatId not in chats:
-            logger.info("Chat not in the list. Verify user")
-            # Present challenge
-            chal = getChall() 
-            question = chal["Question"]
-            answers = chal["Answers"]
-            keyboard = buildKeyboard(answers)
-            sendMessage("New chat! Please verify by answering a simple question!", chatId)
-            sendMessage(question, chatId, keyboard)
+      
 
-            # Change status
-            chats[chatId] = "verifying"
-
-            expected[chatId] = answers[chal["Correct"]]
-
-            return
-
-        elif chats[chatId] == "verifying":
-            logger.info("Verify user answer")
-            # check answer
-            if text == expected[chatId]:
-                logger.info("User verified!")
-                sendMessage("Correct! User verified.", chatId)
-                chats[chatId] = "verified"
-            else:
-                logger.info("Incorrect answer. Not verified")
-                del chats[chatId]
-
-        elif text == "/start":
+        if text == "/start":
             keyboard = buildKeyboard(commands)
             sendMessage("Hello %s! Why not try the commands below:"  % getName(body), chatId, keyboard)
 
@@ -294,7 +266,35 @@ class WebhookHandler(webapp2.RequestHandler):
         elif text == "/fortune":
             sendMessage(getCookie(), chatId)
 
-        elif text.startswith("/"):
+        elif text == "/trivia": 
+            # Has user answered the challenge?
+            if (chatId not in chats) or (chats[chatId] != "waitingAnswer"):
+                logger.info("Sendia trivia question")
+                chal = getChall() 
+                question = chal["Question"]
+                answers = chal["Answers"]
+                keyboard = buildKeyboard(answers)
+                sendMessage("New chat! Please verify by answering a simple question!", chatId)
+                sendMessage(question, chatId, keyboard)
+
+                # Change status
+                chats[chatId] = "waitingAnswer"
+
+                expected[chatId] = answers[chal["Correct"]]
+    
+        elif chats[chatId] == "waitingAnswer":
+            logger.info("Verify user answer")
+
+            if text == expected[chatId]:
+                logger.info("Correct trivia answer!")
+                sendMessage("Wow! That is correct!", chatId)
+            else:
+                logger.info("Incorrect answer")
+                sendMessage("Wrong answer :(", chatId)
+
+            del chats[chatId]
+   
+         elif text.startswith("/"):
             sendMessage("Cahn's Axiom: When all else fails, read the instructions", chatId) 
 
         else:
