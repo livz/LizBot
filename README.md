@@ -91,7 +91,7 @@ $ gcloud app versions delete v1 v2
 ```
 
 * Manage versions using GUI :
-  * Google Cloud Platform -> Stackdriver logging -> Logs
+  * Google Cloud Platform -> App Engine -> Versions
   
 ![Versions](images/versions.png)
 
